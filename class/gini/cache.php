@@ -21,26 +21,26 @@ namespace Gini {
         static $CACHE_PREFIX;
         static $vars = array();
 
-        static function normalize_key($key) {
+        static function normalizeKey($key) {
             return self::$CACHE_PREFIX . $key;
         }
 
         function set($key, $value, $ttl=0) {
             if (!$this->driver) return false;
-            $key = self::normalize_key($key);
+            $key = self::normalizeKey($key);
             return $this->driver->set($key, $value, $ttl); 
         }
         
         function get($key) {
             if (!$this->driver) return null;
-            $key = self::normalize_key($key);
+            $key = self::normalizeKey($key);
             $value = $this->driver->get($key); 
             return $value;
         }
         
         function remove($key) {
             if (!$this->driver) return false;
-            $key = self::normalize_key($key);
+            $key = self::normalizeKey($key);
             return $this->driver->remove($key); 
         }
         
