@@ -1,137 +1,50 @@
 <?php
 
-namespace Gini\Cache {
+namespace Gini;
 
-    interface Driver {
-        function get($key);
-        function set($key, $value, $ttl);
-        function remove($key);
-        function flush();
+class Cache
+{
+    private $_driver;
+    private static $_CACHE;
+
+    public function set($key, $value, $ttl=null)
+    {
+        if (!$this->_driver) return false;
+        return $this->_driver->set($key, $value, $ttl);
+    }
+    
+    public function get($key)
+    {
+        if (!$this->_driver) return false;
+        return $this->_driver->get($key);
+    }
+
+    public function remove($key)
+    {
+        if (!$this->_driver) return false;
+        return $this->_driver->remove($key);
+    }
+
+    //清空缓冲
+    public function flush()
+    {
+        if ($this->_driver) $this->_driver->flush();
+    }
+
+    public function __construct($name, $_driver, array $options)
+    {
+        $class = '\Gini\Cache\\'.$_driver;
+        $this->_driver = \Gini\IoC::construct($class, $name, $options);
+    }
+
+    // \Gini\Cache::of('default', 'redis', $options)->set('a', 'b');
+    public static function of($name, $_driver = 'none', array $options = array())
+    {
+        if (!isset(self::$_CACHE[$_driver])) {
+            self::$_CACHE[$_driver] = \Gini\IoC::construct('\Gini\Cache', $name, $_driver, $options);
+        }
+
+        return self::$_CACHE[$_driver];
     }
 
 }
-
-namespace Gini {
-
-    final class Cache {
-        
-        private $driver;
-        private static $_caches;
-
-        static $CACHE_PREFIX;
-        static $vars = array();
-
-        static function normalizeKey($key) {
-            return self::$CACHE_PREFIX . $key;
-        }
-
-        function set($key, $value, $ttl=0) {
-            if (!$this->driver) return false;
-            $key = self::normalizeKey($key);
-            return $this->driver->set($key, $value, $ttl); 
-        }
-        
-        function get($key) {
-            if (!$this->driver) return null;
-            $key = self::normalizeKey($key);
-            $value = $this->driver->get($key); 
-            return $value;
-        }
-        
-        function remove($key) {
-            if (!$this->driver) return false;
-            $key = self::normalizeKey($key);
-            return $this->driver->remove($key); 
-        }
-        
-        //清空缓冲
-        function flush() {
-            if ($this->driver) $this->driver->flush(); 
-        }
-        
-        function __construct($name=null) {
-            $class = '\\Gini\\Cache\\'.$name;
-            $this->driver = new $class;
-        }
-
-        static function factory($name = null) {
-            if ($name === null) $name = 'none';
-            if (!isset(self::$_caches[$name])) {
-                self::$_caches[$name] = new Cache($name);
-            }
-            return self::$_caches[$name];
-        }
-
-        /**
-            * @brief 根据路径返回缓冲路径名
-            *
-            * @param $path 原始路径
-            *
-            * @return 相对于DOC_ROOT的缓冲路径
-         */
-        static function cache_filename($path) {
-            $ext = pathinfo($path, PATHINFO_EXTENSION);
-            return CACHE_DIR.hash('md4', self::$CACHE_PREFIX . $path).'.'.$ext;
-        }
-
-        /**
-        * @brief 缓冲内容到某原始路径对应的缓冲文件，无视该路径是否存在
-        *
-        * @param $path 原始路径
-        * @param $content 缓冲的内容
-        *
-        * @return 无
-        */
-        static function cache_content($path, $content) {
-            $cache_file = self::cache_filename($path);
-            $cache_path =  $_SERVER['DOCUMENT_ROOT'].'/'.$cache_file;
-            $dir = dirname($cache_path);
-            if (!is_dir($dir)) {
-                mkdir($dir, 0755, true);
-            }
-            file_put_contents($cache_path, $content);
-        }
-
-        /**
-         * @brief 返回相对于系统公共目录的缓冲路径, 如果该缓冲文件不存在
-         * 则复制文件到该处
-         * @param $path 原始路径
-         * @param $recache 是否无论如何都重新复制缓冲文件
-         *
-         * @return 相对DOC_ROOT的缓冲路径
-         */
-        static function cache_file($path, $recache = false) {
-            $cache_file = self::cache_filename($path);
-            $cache_path =  $_SERVER['DOCUMENT_ROOT'].'/'.$cache_file;
-            if ($recache || !file_exists($cache_path)) {
-                $dir = dirname($cache_path);
-                if (!is_dir($dir)) {
-                    mkdir($dir, 0755, true);
-                }
-                copy($path, $cache_path);
-            }
-            return $cache_file;
-        }
-
-        /**
-         * @brief 移除某路径的缓冲文件
-         *
-         * @param $path: 相应的路径
-         *
-         * @return 无
-         */
-        static function remove_cache_file($path) {
-            $ext = pathinfo($path, PATHINFO_EXTENSION);
-            $cache_file = 'cache/'.hash('md4', $path).'.'.$ext;
-            $cache_path = $_SERVER['DOCUMENT_ROOT'].'/'.$cache_file;
-            @unlink($cache_path);
-        }
-
-        static function setup() {
-            self::$CACHE_PREFIX = hash('md4', APP_PATH).':';        
-        }
-    }
-
-}
-
-

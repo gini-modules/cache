@@ -1,5 +1,5 @@
 {
-    "shortname": "cache",
+    "id": "cache",
     "name": "Cache",
     "description": "Cache Module",
     "version": "0.0.1",

@@ -2,29 +2,36 @@
 
 namespace Gini\Cache;
 
-class YAC implements \Gini\Cache\Driver {
-
+class YAC implements \Gini\Cache\Driver
+{
     private $_h;
 
-    function __construct() {
-        $this->_h = new \Yac();
+    public function __construct($name, array $options)
+    {
+        $this->_h = new \Yac($name);
     }
 
-    function set($key, $value, $ttl) {
+    public function set($key, $value, $ttl)
+    {
+        $key = sha1($key);
         return $this->_h->set($key, $value, $ttl);
     }
-    
-    function get($key) {
+
+    public function get($key)
+    {
+        $key = sha1($key);
         return $this->_h->get($key);
     }
-    
-    function remove($key) {
+
+    public function remove($key)
+    {
+        $key = sha1($key);
         return $this->_h->delete($key);
     }
-    
-    function flush() {
+
+    public function flush()
+    {
         return $this->_h->flush();
     }
-    
-}
 
+}
