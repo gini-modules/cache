@@ -22,18 +22,18 @@ class Redis implements \Gini\Cache\Driver
             $this->_h->auth($options['password']);
         }
 
-        $this->_h->select($name);
+        $this->_h->select($options['index'] ?: 0);
 
     }
-    
+
     public function set($key, $value, $ttl)
     {
-        return $this->_h->set($key, $value, $ttl);
+        return $this->_h->set($key, J($value), $ttl);
     }
 
     public function get($key)
     {
-        return $this->_h->get($key);
+        return json_decode($this->_h->get($key), true);
     }
 
     public function remove($key)

@@ -12,7 +12,7 @@ class Cache
         if (!$this->_driver) return false;
         return $this->_driver->set($key, $value, $ttl);
     }
-    
+
     public function get($key)
     {
         if (!$this->_driver) return false;
@@ -37,11 +37,13 @@ class Cache
         $this->_driver = \Gini\IoC::construct($class, $name, $options);
     }
 
-    // \Gini\Cache::of('default', 'redis', $options)->set('a', 'b');
-    public static function of($name, $_driver = 'none', array $options = array())
+    // \Gini\Cache::of('default')->set('a', 'b');
+    public static function of($name)
     {
         if (!isset(self::$_CACHE[$_driver])) {
-            self::$_CACHE[$_driver] = \Gini\IoC::construct('\Gini\Cache', $name, $_driver, $options);
+            $conf = (array) (\Gini\Config::get("cache.$name") ?: \Gini\Config::get("cache.default"));
+            self::$_CACHE[$_driver] = \Gini\IoC::construct('\Gini\Cache', $name,
+                $conf['driver'] ?: 'none', (array) $conf['options']);
         }
 
         return self::$_CACHE[$_driver];
