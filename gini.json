@@ -2,6 +2,8 @@
     "id": "cache",
     "name": "Cache",
     "description": "Cache Module",
-    "version": "0.0.1",
-    "dependencies": ""
+    "version": "0.1.0",
+    "dependencies": {
+        "gini": "*"
+    }
 }
