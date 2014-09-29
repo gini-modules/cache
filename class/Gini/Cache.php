@@ -5,24 +5,26 @@ namespace Gini;
 class Cache
 {
     private $_driver;
+    private $_keyPrefix;
+
     private static $_CACHE;
 
     public function set($key, $value, $ttl=null)
     {
         if (!$this->_driver) return false;
-        return $this->_driver->set($key, $value, $ttl);
+        return $this->_driver->set($this->_keyPrefix . $key, $value, $ttl);
     }
 
     public function get($key)
     {
         if (!$this->_driver) return false;
-        return $this->_driver->get($key);
+        return $this->_driver->get($this->_keyPrefix . $key);
     }
 
     public function remove($key)
     {
         if (!$this->_driver) return false;
-        return $this->_driver->remove($key);
+        return $this->_driver->remove($this->_keyPrefix . $key);
     }
 
     //清空缓冲
@@ -35,6 +37,7 @@ class Cache
     {
         $class = '\Gini\Cache\\'.$_driver;
         $this->_driver = \Gini\IoC::construct($class, $name, $options);
+        $this->_keyPrefix = isset($options['key_prefix']) ? $options['key_prefix'] : '';
     }
 
     // \Gini\Cache::of('default')->set('a', 'b');
