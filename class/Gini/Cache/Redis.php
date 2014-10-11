@@ -46,4 +46,12 @@ class Redis implements \Gini\Cache\Driver
         return $this->_h->flushDB();
     }
 
+    public function publish($channel, $message) {
+        return $this->_h->publish($channel, $message);
+    }
+
+    public function subscribe($channels, $callback) {
+        return $this->_h->subscribe($channels, $callback);
+    }
+
 }
