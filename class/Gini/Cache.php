@@ -41,11 +41,11 @@ class Cache
         }
     }
 
-    public function subscribe($channel, $message)
+    public function subscribe($channels, $message)
     {
         if (!$this->_driver) return false;
         if (method_exists($this->_driver, 'subscribe')) {
-            return call_user_func([$this->_driver, 'subscribe'], $channel, $message);
+            return call_user_func([$this->_driver, 'subscribe'], $channels, $message);
         }
     }
 
