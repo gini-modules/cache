@@ -33,6 +33,22 @@ class Cache
         if ($this->_driver) $this->_driver->flush();
     }
 
+    public function publish($channel, $message)
+    {
+        if (!$this->_driver) return false;
+        if (method_exists($this->_driver, 'publish')) {
+            return call_user_func([$this->_driver, 'publish'], $channel, $message);
+        }
+    }
+
+    public function subscribe($channels, $message)
+    {
+        if (!$this->_driver) return false;
+        if (method_exists($this->_driver, 'subscribe')) {
+            return call_user_func([$this->_driver, 'subscribe'], $channels, $message);
+        }
+    }
+
     public function __construct($name, $_driver, array $options)
     {
         $class = '\Gini\Cache\\'.$_driver;
