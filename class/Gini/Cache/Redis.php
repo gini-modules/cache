@@ -8,37 +8,43 @@ class Redis implements \Gini\Cache\Driver
 
     public function __construct($name, array $options)
     {
-        $this->_h = new \Redis();
 
-        if (!isset($options['servers'])) {
-            $options['servers'] = ['host'=>'127.0.0.1', 'port'=>6379];
+        try {
+            $this->_h = new \Redis();
+
+            if (!isset($options['servers'])) {
+                $options['servers'] = ['host'=>'127.0.0.1', 'port'=>6379];
+            }
+
+            foreach ((array) $options['servers'] as $server) {
+                $this->_h->connect($server['host'], $server['port']);
+            }
+
+            if (isset($options['password'])) {
+                $this->_h->auth($options['password']);
+            }
+
+            $this->_h->select($options['index'] ?: 0);
+
+        } catch (\RedisException $e) {
+            $this->_h = null;
         }
-
-        foreach ((array) $options['servers'] as $server) {
-            $this->_h->connect($server['host'], $server['port']);
-        }
-
-        if (isset($options['password'])) {
-            $this->_h->auth($options['password']);
-        }
-
-        $this->_h->select($options['index'] ?: 0);
 
     }
 
     public function set($key, $value, $ttl)
     {
-        return $this->_h->set($key, J($value), $ttl);
+        return $this->_h ? $this->_h->set($key, J($value), $ttl) : false;
     }
 
     public function get($key)
     {
-        return json_decode($this->_h->get($key), true);
+        return $this->_h ? json_decode($this->_h->get($key), true) : false;
     }
 
     public function remove($key)
     {
-        return $this->_h->delete($key);
+        return $this->_h ? $this->_h->delete($key) : false;
     }
 
     public function flush()

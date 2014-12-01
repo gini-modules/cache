@@ -2,7 +2,7 @@
 
 namespace Gini\Cache;
 
-class YAC implements \Gini\Cache\Driver
+class Yac implements \Gini\Cache\Driver
 {
     private $_h;
 
