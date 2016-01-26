@@ -43,10 +43,11 @@ class Cache
     // \Gini\Cache::of('default')->set('a', 'b');
     public static function of($name)
     {
+        $conf = (array) (\Gini\Config::get("cache.$name") ?: \Gini\Config::get("cache.default"));
+        $_driver = $conf['driver'];
         if (!isset(self::$_CACHE[$_driver])) {
-            $conf = (array) (\Gini\Config::get("cache.$name") ?: \Gini\Config::get("cache.default"));
             self::$_CACHE[$_driver] = \Gini\IoC::construct('\Gini\Cache', $name,
-                $conf['driver'] ?: 'none', (array) $conf['options']);
+                    $conf['driver'] ?: 'none', (array) $conf['options']);
         }
 
         return self::$_CACHE[$_driver];
