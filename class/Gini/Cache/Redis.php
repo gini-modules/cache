@@ -39,7 +39,11 @@ class Redis implements \Gini\Cache\Driver
 
     public function get($key)
     {
-        return $this->_h ? json_decode($this->_h->get($key), true) : false;
+        if (!$this->_h) return false;
+        $value = $this->_h->get($key);
+        if ($value === false) return false;
+        
+        return json_decode($this->_h->get($key), true);
     }
 
     public function remove($key)
