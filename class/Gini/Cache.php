@@ -45,7 +45,7 @@ class Cache
     {
         $key = \Gini\Config::get("cache.$name") ? $name : 'default';
         $conf = (array) \Gini\Config::get("cache.$key");
-        $key = "{$prefix}-{$conf['driver']}";
+        $key = "{$key}-{$conf['driver']}";
         if (!isset(self::$_CACHE[$key])) {
             self::$_CACHE[$key] = \Gini\IoC::construct('\Gini\Cache', $name, $conf['driver'] ?: 'none', (array) $conf['options']);
         }
