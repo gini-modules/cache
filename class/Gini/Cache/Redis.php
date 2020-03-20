@@ -42,13 +42,13 @@ class Redis implements \Gini\Cache\Driver
         if (!$this->_h) return false;
         $value = $this->_h->get($key);
         if ($value === false) return false;
-        
+
         return json_decode($this->_h->get($key), true);
     }
 
     public function remove($key)
     {
-        return $this->_h ? $this->_h->delete($key) : false;
+        return $this->_h ? $this->_h->del($key) : false;
     }
 
     public function flush()
