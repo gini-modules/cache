@@ -48,7 +48,7 @@ class Redis implements \Gini\Cache\Driver
 
     public function remove($key)
     {
-        return $this->_h ? $this->_h->del($key) : false;
+        return $this->_h ? $this->_h->del($this->_h->keys($key)) : false;
     }
 
     public function flush()
