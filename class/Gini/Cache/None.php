@@ -13,6 +13,8 @@ class None implements \Gini\Cache\Driver
 
     public function remove($key) { }
 
+    public function rename($fromKey, $toKey) {}
+
     public function flush() { }
 
 }

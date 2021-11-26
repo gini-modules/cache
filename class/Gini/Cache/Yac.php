@@ -37,4 +37,9 @@ class Yac implements \Gini\Cache\Driver
         return $this->_h->flush();
     }
 
+    public function rename($fromKey, $toKey)
+    {
+        return false;
+    }
+
 }

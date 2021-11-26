@@ -27,6 +27,12 @@ class Cache
         return $this->_driver->remove($this->_keyPrefix . $key);
     }
 
+    public function rename($fromKey, $toKey)
+    {
+        if (!$this->_driver) return false;
+        return $this->_driver->rename($this->_keyPrefix . $fromKey, $this->_keyPrefix.$toKey);
+    }
+
     //清空缓冲
     public function flush()
     {

@@ -56,4 +56,9 @@ class Redis implements \Gini\Cache\Driver
         return $this->_h->flushDB();
     }
 
+    public function rename($fromKey, $toKey)
+    {
+        return $this->_h->rename($fromKey, $toKey);
+    }
+
 }
