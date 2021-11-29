@@ -2,8 +2,9 @@
     "id": "cache",
     "name": "Cache",
     "description": "Cache Module",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "dependencies": {
         "gini": "*"
-    }
+    },
+    "moduleClass": "\\Gini\\Module\\cache"
 }
