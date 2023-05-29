@@ -25,6 +25,12 @@ class Yac implements \Gini\Cache\Driver
         return $this->_h->get($key);
     }
 
+    public function ttl($key) 
+    {
+        $key = sha1($key);
+        return $this->_h->get($key);
+    }
+
     public function remove($key)
     {
         $key = sha1($key);

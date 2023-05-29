@@ -8,6 +8,7 @@ class None implements \Gini\Cache\Driver
     {}
 
     public function set($key, $value, $ttl) { }
+    public function ttl($key) { }
 
     public function get($key) { return false; }
 

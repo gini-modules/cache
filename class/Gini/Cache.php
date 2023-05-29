@@ -21,6 +21,12 @@ class Cache
         return $this->_driver->get($this->_keyPrefix . $key);
     }
 
+    public function ttl($key)
+    {
+        if (!$this->_driver) return false;
+        return $this->_driver->ttl($this->_keyPrefix . $key);
+    }
+
     public function remove($key)
     {
         if (!$this->_driver) return false;
