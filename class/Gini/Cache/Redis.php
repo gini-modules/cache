@@ -24,7 +24,7 @@ class Redis implements \Gini\Cache\Driver
                 $this->_h->auth($options['password']);
             }
 
-            $this->_h->select($options['index'] ?: 0);
+            $this->_h->select($options['index'] ?? 0);
 
         } catch (\RedisException $e) {
             $this->_h = null;
