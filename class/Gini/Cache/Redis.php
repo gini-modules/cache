@@ -13,11 +13,13 @@ class Redis implements \Gini\Cache\Driver
             $this->_h = new \Redis();
 
             if (!isset($options['servers'])) {
-                $options['servers'] = ['host'=>'127.0.0.1', 'port'=>6379];
+                $options['servers'] = [['host'=>'127.0.0.1', 'port'=>6379]];
             }
 
             foreach ((array) $options['servers'] as $server) {
-                $this->_h->connect($server['host'], $server['port']);
+                $host = is_array($server) ? ($server['host'] ?? '127.0.0.1') : (string)$server;
+                $port = is_array($server) ? (int)($server['port'] ?? 6379) : 6379;
+                $this->_h->connect($host, $port);
             }
 
             if (isset($options['password'])) {
